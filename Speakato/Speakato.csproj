@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Speakato.Abstractions\Speakato.Abstractions.csproj" />
+    <ProjectReference Include="..\Speakato.Models\Speakato.Models.csproj" />
+    <ProjectReference Include="..\Speakato.VoiceRecognizers\Speakato.VoiceRecognizers.csproj" />
+  </ItemGroup>
+
+</Project>

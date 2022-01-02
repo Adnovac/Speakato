@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Speakato.Abstractions\Speakato.Abstractions.csproj" />
     <ProjectReference Include="..\Speakato.Models\Speakato.Models.csproj" />
     <ProjectReference Include="..\Speakato.VoiceRecognizers\Speakato.VoiceRecognizers.csproj" />
+    <ProjectReference Include="..\Speakato\Speakato.csproj" />
   </ItemGroup>
 
   <ItemGroup>

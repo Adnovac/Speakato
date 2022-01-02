@@ -1,9 +1,9 @@
 ﻿namespace Speakato
 {
-    public interface ISpeakato
+    public interface ISpeakatoRecognizer
     {
         string SpeechToText();
-        float[,] SpeechToVector();
         string SpeechToCommand();
+        float[] TextToVector(string sentence);
     }
 }

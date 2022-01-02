@@ -19,13 +19,9 @@ namespace Speakato.Models
     public abstract class Configuration
     {
         /// <summary>
-        /// Language on which model is working on and Voice Recognizer will be working on.
-        /// </summary>
-        public string Language { get; set; }
-
-        /// <summary>
         /// Path to the directory produced by SpeakatoTrainer
         /// </summary>
         public string ModelPath { get; set; }
+        public string PythonEnvironmentPath { get; set; }
     }
 }

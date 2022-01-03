@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpaCyDotNet\SpaCyDotNet.csproj" />
+    <ProjectReference Include="..\..\external\SpaCyDotNet\SpaCyDotNet.csproj" />
     <ProjectReference Include="..\Speakato.Abstractions\Speakato.Abstractions.csproj" />
     <ProjectReference Include="..\Speakato.Models\Speakato.Models.csproj" />
     <ProjectReference Include="..\Speakato.VoiceRecognizers\Speakato.VoiceRecognizers.csproj" />

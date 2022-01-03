@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Speakato.CommandRecognizer;
 using Speakato.Models;
 using System;
 using System.Net.Http;
@@ -31,7 +32,8 @@ namespace Speakato.TestConsole
 
         static void Main()
         {
-            speakatoRecognizer.TextToVector("Siema, co tam w nowym roku się dzieje ciekawego");
+            var value = speakatoRecognizer.TextToCommand("Siema, co tam?");
+            Console.WriteLine(value);
         }
     }
 }

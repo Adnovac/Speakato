@@ -9,14 +9,14 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.20" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Speakato.Abstractions\Speakato.Abstractions.csproj" />
-    <ProjectReference Include="..\Speakato.Models\Speakato.Models.csproj" />
-    <ProjectReference Include="..\Speakato.VoiceRecognizers\Speakato.VoiceRecognizers.csproj" />
-    <ProjectReference Include="..\Speakato\Speakato.csproj" />
+    <ProjectReference Include="..\src\Speakato.Abstractions\Speakato.Abstractions.csproj" />
+    <ProjectReference Include="..\src\Speakato.Models\Speakato.Models.csproj" />
+    <ProjectReference Include="..\src\Speakato.VoiceRecognizers\Speakato.VoiceRecognizers.csproj" />
+    <ProjectReference Include="..\src\Speakato.CommandRecognizer\Speakato.CommandRecognizer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,15 +14,14 @@ namespace Speakato.TestConsole
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            IConfiguration Configuration = builder.Build();
 
-            builder.AddAzureKeyVault(Configuration.GetSection("KeyVault")["Url"]);
-            Configuration = builder.Build();
+            builder.AddEnvironmentVariables();
+            IConfiguration Configuration = builder.Build();
 
             var config = new CognitiveServiceConfiguration()
             {
-                Key = Configuration.GetSection("CognitiveService")["Key"],
-                Url = new Uri(Configuration.GetSection("CognitiveService")["Url"]),
+                Key = Configuration["CognitiveServiceKey"],
+                Url = new Uri(Configuration["CognitiveServiceUrl"]),
                 ModelPath = modelPath,
                 PythonEnvironmentPath = Configuration["PythonEnvironmentPath"]
             };

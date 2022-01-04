@@ -11,10 +11,10 @@ namespace Speakato.VoiceRecognizer.CognitiveServices
     {
         private readonly HttpClient httpClient;
         private readonly string language;
-        public CognitiveServiceVoiceRecognizer(CognitiveServiceConfiguration configuration, HttpClient httpClient)
+        public CognitiveServiceVoiceRecognizer(CognitiveServiceConfiguration configuration, HttpClient httpClient, string language)
         {
             httpClient.BaseAddress = configuration.Url;
-            language = configuration.Language;
+            this.language = language;
             httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", configuration.Key);
             this.httpClient = httpClient;
         }

@@ -1,52 +1,38 @@
-﻿using Speakato.Abstractions;
+﻿using Microsoft.Extensions.Configuration;
+using Speakato.CommandRecognizer;
 using Speakato.Models;
-using Speakato.VoiceRecognizer.CognitiveServices;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.IO;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Speakato.TestConsole
 {
     class Program
     {
-        private static readonly IVoiceRecognizerService voiceRecognizerService;
-        private const string path = @"C:\Users\Ania\Desktop\Asystent głosowy - materiał\short_clips";
+        private static readonly ISpeakatoRecognizer speakatoRecognizer;
+        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\Speakato_model_2022-01-02";
         static Program()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            builder.AddEnvironmentVariables();
             IConfiguration Configuration = builder.Build();
-            
-            builder.AddAzureKeyVault(Configuration.GetSection("KeyVault")["Url"]);
-            Configuration = builder.Build();
 
             var config = new CognitiveServiceConfiguration()
             {
-                Key = Configuration.GetSection("CognitiveService")["Key"],
-                Url = new Uri(Configuration.GetSection("CognitiveService")["Url"]),
-                Language = Configuration["Language"]
+                Key = Configuration["CognitiveServiceKey"],
+                Url = new Uri(Configuration["CognitiveServiceUrl"]),
+                ModelPath = modelPath,
+                PythonEnvironmentPath = Configuration["PythonEnvironmentPath"]
             };
 
-            voiceRecognizerService = new CognitiveServiceVoiceRecognizer(config, new HttpClient());
+            speakatoRecognizer = new SpeakatoRecognizer(new HttpClient(), config);
         }
 
-        static async Task Main()
+        static void Main()
         {
-            foreach (string filePath in Directory.GetFiles(path))
-            {
-                try
-                {
-                    Stream inputStream = File.OpenRead(filePath);
-                    string result = await voiceRecognizerService.SpeechRecognizeAsync(inputStream);
-                    Console.WriteLine(result);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            var value = speakatoRecognizer.TextToCommand("Siema, co tam?");
+            Console.WriteLine(value);
         }
     }
 }

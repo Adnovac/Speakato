@@ -1,0 +1,9 @@
+﻿<Application x:Class="VoiceAssistant.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:VoiceAssistant"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <FontFamily x:Key="FontAwesome">/Fonts/FontAwesome5.otf#Font Awesome 5 Free Regular</FontFamily>
+    </Application.Resources>
+</Application>

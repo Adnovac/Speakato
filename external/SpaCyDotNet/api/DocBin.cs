@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Python.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Python.Runtime;
 
 namespace SpacyDotNet
 {
@@ -68,15 +68,17 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new MemoryStream();                
-
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using var writer = XmlWriter.Create(stream, settings);                
-
-                WriteXml(writer);
-                writer.Flush();
-                return stream.ToArray();
+                using (var stream = new MemoryStream())
+                {
+                    var settings = new XmlWriterSettings();
+                    settings.Indent = true;
+                    using (var writer = XmlWriter.Create(stream, settings))
+                    {
+                        WriteXml(writer);
+                        writer.Flush();
+                        return stream.ToArray();
+                    }
+                }
             }
         }
 
@@ -117,13 +119,15 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new FileStream(pathFile, FileMode.Create);
-
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using var writer = XmlWriter.Create(stream, settings);
-
-                WriteXml(writer);
+                using (var stream = new FileStream(pathFile, FileMode.Create))
+                {
+                    var settings = new XmlWriterSettings();
+                    settings.Indent = true;
+                    using (var writer = XmlWriter.Create(stream, settings))
+                    {
+                        WriteXml(writer);
+                    }
+                }
             }
         }
 
@@ -139,16 +143,17 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new FileStream(pathFile, FileMode.Open, FileAccess.Read);
+                using (var stream = new FileStream(pathFile, FileMode.Open, FileAccess.Read))
+                {
+                    var settings = new XmlReaderSettings();
+                    settings.IgnoreComments = true;
+                    settings.IgnoreWhitespace = true;
+                    var reader = XmlReader.Create(stream, settings);
 
-                var settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreWhitespace = true;
-                var reader = XmlReader.Create(stream, settings);
-
-                var docBin = new DocBin();
-                docBin.ReadXml(reader);
-                Copy(docBin);
+                    var docBin = new DocBin();
+                    docBin.ReadXml(reader);
+                    Copy(docBin);
+                }
             }
         }
 
@@ -224,10 +229,10 @@ namespace SpacyDotNet
 
             Debug.Assert(reader.Name == $"{Serialization.Prefix}:Docs");
             reader.ReadStartElement();
-            _docs = new List<Doc>();            
+            _docs = new List<Doc>();
 
             while (reader.MoveToContent() != XmlNodeType.EndElement)
-            {                
+            {
                 if (reader.NodeType != XmlNodeType.EndElement)
                 {
                     var doc = new Doc();

@@ -1,11 +1,10 @@
-﻿using Speakato.Abstractions;
-using Speakato.Models;
+﻿using Speakato.Models;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Speakato.VoiceRecognizer.CognitiveServices
+namespace Speakato.VoiceRecognizers.CognitiveServices
 {
     public class CognitiveServiceVoiceRecognizer : IVoiceRecognizerService
     {
@@ -19,6 +18,12 @@ namespace Speakato.VoiceRecognizer.CognitiveServices
             this.httpClient = httpClient;
         }
 
+        /// <summary>
+        /// Returns recognized speech from the given stream if possible.
+        /// Returns null if speech isn't recognized. 
+        /// </summary>
+        /// <param name="voiceFileStream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <returns>A string with a recognized speech</returns>
         public async Task<string> SpeechRecognizeAsync(Stream voiceStream)
         {
             StreamContent content = new StreamContent(voiceStream);

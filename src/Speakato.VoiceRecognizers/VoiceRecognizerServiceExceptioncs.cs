@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Speakato.VoiceRecognizer
+namespace Speakato.VoiceRecognizers
 {
     public class VoiceRecognizerServiceException : Exception
     {
@@ -21,7 +21,7 @@ namespace Speakato.VoiceRecognizer
         {
             StatusCode = statusCode;
         }
-
+        
         public HttpStatusCode StatusCode { get; private set; }
     }
 }

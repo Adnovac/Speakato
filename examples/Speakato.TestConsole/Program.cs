@@ -9,13 +9,12 @@ namespace Speakato.TestConsole
     class Program
     {
         private static readonly ISpeakatoRecognizer speakatoRecognizer;
-        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\Speakato_model_2022-01-02";
+        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\spkt-test";
+        private const string envPath = @"C:\Users\annad\anaconda3\envs\spkt";
         static Program()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-            builder.AddEnvironmentVariables();
+                                                    .AddEnvironmentVariables();
             IConfiguration Configuration = builder.Build();
 
             var config = new CognitiveServiceConfiguration()
@@ -23,7 +22,7 @@ namespace Speakato.TestConsole
                 Key = Configuration["CognitiveServiceKey"],
                 Url = new Uri(Configuration["CognitiveServiceUrl"]),
                 ModelPath = modelPath,
-                PythonEnvironmentPath = Configuration["PythonEnvironmentPath"]
+                PythonEnvironmentPath = envPath
             };
 
             speakatoRecognizer = new SpeakatoRecognizer(new HttpClient(), config);

@@ -5,9 +5,28 @@ namespace Speakato.CommandRecognizer
 {
     public interface ISpeakatoRecognizer
     {
+        /// <summary>
+        /// Predicts command with a model trained in SpeakatoTrainer 
+        /// Returns null if command isn't recognized.
+        /// </summary>
+        /// <param name="stream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <returns>Recognized command</returns>
         Task<string> SpeechToCommand(Stream stream);
+
+        /// <summary>
+        /// Returns recognized speech from the given stream if possible.
+        /// Returns null if speech isn't recognized. 
+        /// </summary>
+        /// <param name="stream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <returns>A string with a recognized speech</returns>
         Task<string> SpeechToText(Stream stream);
+
+        /// <summary>
+        /// Predicts command with a model trained in SpeakatoTrainer 
+        /// Returns null if command isn't recognized.
+        /// </summary>
+        /// <param name="sentence">Sentence from which a command should be recognized</param>
+        /// <returns>Recognized command</returns>
         string TextToCommand(string sentence);
-        float[] TextToVector(string sentence);
     }
 }

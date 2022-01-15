@@ -2,24 +2,24 @@
         AllowsTransparency="True"
         WindowStyle="None"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
-        Title="Voice Assistant" Height="120" Width="800">
+        Title="Voice Assistant" Height="120" Width="800"
+        DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
     <Grid>
         <DockPanel>
             <Grid Opacity="0.5" DockPanel.Dock="Top" Height="40" Background="Black" MouseDown="Grid_MouseDown">
-                <TextBlock Name="RecognizedTextBlock" FontSize="26" Foreground="White" TextAlignment="Center">Example text</TextBlock>
+                <TextBlock Name="RecognizedTextBlock" FontSize="26" Foreground="White" TextAlignment="Center" Text="{Binding Path=RecognizedVoice}"/>
             </Grid>
             <Border CornerRadius="0,0,30,30" BorderThickness="1,1,1,1" Background="#330033" >
                 <Grid Opacity="1" DockPanel.Dock="Bottom">
                     <StackPanel Orientation="Horizontal" Margin="30,10,30,10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Border CornerRadius="10,10,10,10" Background="#4d004d" Width="75" Height="50" VerticalAlignment="Center">
-                            <TextBlock Text="&#xf4ad;" FontFamily="{StaticResource FontAwesome}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-                        </Border>
+                        <Button Style="{StaticResource BorderButton}" Content="&#xf4ad;" Command="{Binding Path=ListenCommand}"/>
+                        <Button Style="{StaticResource BorderButton}" Content="&#xf410;" Command="{Binding Path=CloseApplicationCommand}"/>
                     </StackPanel>
                 </Grid>
             </Border>

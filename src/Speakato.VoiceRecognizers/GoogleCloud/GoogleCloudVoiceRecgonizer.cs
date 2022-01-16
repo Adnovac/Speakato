@@ -11,10 +11,12 @@ namespace Speakato.VoiceRecognizers.Google
     {
         private readonly SpeechClient speechClient;
         private readonly RecognitionConfig config;
-        public GoogleCloudVoiceRecgonizer(GoogleCloudConfiguration configuration, string language)
+
+        /// <summary>
+        /// GOOGLE_APPLICATION_CREDENTIALS Has to be set before initializing this class
+        /// </summary>
+        public GoogleCloudVoiceRecgonizer(string language)
         {
-            //TODO: Finish credentials
-            var credentials = GoogleCredential.FromFile(configuration.KeyPath);
             speechClient = SpeechClient.Create();
             string languageCode = null;
 
@@ -37,7 +39,7 @@ namespace Speakato.VoiceRecognizers.Google
         /// Returns recognized speech from the given stream if possible.
         /// Returns null if speech isn't recognized. 
         /// </summary>
-        /// <param name="voiceFileStream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <param name="voiceFileStream">Stream of a recording containing a sample with speech to be recognized (flac/wav format)</param>
         /// <returns>A string with a recognized speech</returns>
         public async Task<string> SpeechRecognizeAsync(Stream voiceFileStream)
         {
@@ -45,7 +47,7 @@ namespace Speakato.VoiceRecognizers.Google
             var response = await speechClient.RecognizeAsync(config, audio);
             var result = response.Results.FirstOrDefault();
 
-            return result.ToString();
+            return result?.Alternatives.FirstOrDefault()?.Transcript;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using NAudio.Wave;
-using Speakato.CommandRecognizer;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,12 +10,12 @@ namespace VoiceAssistant.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
-        private readonly SpeakatoRecognizer speakatoRecognizer;
-        public MainViewModel(SpeakatoRecognizer speakatoRecognizer)
+        //private readonly SpeakatoRecognizer speakatoRecognizer;
+        public MainViewModel()
         {
             CanListen = true;
             RecognizedVoice = "Say something!";
-            this.speakatoRecognizer = speakatoRecognizer;
+            //this.speakatoRecognizer = speakatoRecognizer;
 
             ListenCommand = new RelayCommand(() => Task.Run(Listen).Wait(), () => CanListen);
             CloseApplicationCommand = new RelayCommand(CloseApplication);
@@ -26,33 +25,33 @@ namespace VoiceAssistant.ViewModels
 
         public async Task Listen()
         {
-            var capture = new WasapiLoopbackCapture();
-            var outStream = new MemoryStream();
+            //var capture = new WasapiLoopbackCapture();
+            //var outStream = new MemoryStream();
 
-            var writer = new WaveFileWriter(outStream, capture.WaveFormat);
-            capture.DataAvailable += (s, a) =>
-            {
-                writer.Write(a.Buffer, 0, a.BytesRecorded);
-                if (writer.Position > capture.WaveFormat.AverageBytesPerSecond * 4)
-                {
-                    capture.StopRecording();
-                }
-            };
+            //var writer = new WaveFileWriter(outStream, capture.WaveFormat);
+            //capture.DataAvailable += (s, a) =>
+            //{
+            //    writer.Write(a.Buffer, 0, a.BytesRecorded);
+            //    if (writer.Position > capture.WaveFormat.AverageBytesPerSecond * 4)
+            //    {
+            //        capture.StopRecording();
+            //    }
+            //};
 
-            capture.RecordingStopped += (s, a) =>
-            {
-                writer.Dispose();
-                writer = null;
-                capture.Dispose();
-            };
+            //capture.RecordingStopped += (s, a) =>
+            //{
+            //    writer.Dispose();
+            //    writer = null;
+            //    capture.Dispose();
+            //};
 
-            capture.StartRecording();
-            while (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
-            {
-                Thread.Sleep(500);
-            }
-            var text = await speakatoRecognizer.SpeechToText(outStream);
-            RecognizedVoice = text;
+            //capture.StartRecording();
+            //while (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
+            //{
+            //    Thread.Sleep(500);
+            //}
+            //var text = await speakatoRecognizer.SpeechToText(outStream);
+            RecognizedVoice = "Test";
         }
 
         public ICommand CloseApplicationCommand { get; private set; }

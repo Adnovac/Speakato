@@ -7,7 +7,7 @@ namespace Speakato.Models
     /// </summary>
     public class GoogleCloudConfiguration : Configuration
     {
-        public string KeyPath { get; set; }
+        // GOOGLE_APPLICATION_CREDENTIALS has to be set
     }
 
     /// <summary>

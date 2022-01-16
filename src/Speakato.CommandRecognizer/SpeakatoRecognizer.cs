@@ -25,9 +25,9 @@ namespace Speakato.CommandRecognizer
         private readonly Lang nlp;
         private readonly PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;
 
-        public SpeakatoRecognizer(HttpClient httpClient, GoogleCloudConfiguration configuration) : this(configuration as Configuration)
+        public SpeakatoRecognizer(GoogleCloudConfiguration configuration) : this(configuration as Configuration)
         {
-            voiceRecognizer = new GoogleCloudVoiceRecgonizer(configuration, settings.Language);
+            voiceRecognizer = new GoogleCloudVoiceRecgonizer(settings.Language);
         }
 
         public SpeakatoRecognizer(HttpClient httpClient, CognitiveServiceConfiguration configuration) : this(configuration as Configuration)

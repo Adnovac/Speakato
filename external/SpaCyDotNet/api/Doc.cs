@@ -120,13 +120,15 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new FileStream(path, FileMode.Create);
-
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using var writer = XmlWriter.Create(stream, settings);
-
-                WriteXml(writer);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    var settings = new XmlWriterSettings();
+                    settings.Indent = true;
+                    using (var writer = XmlWriter.Create(stream, settings))
+                    {
+                        WriteXml(writer);
+                    }
+                }
             }
         }
 
@@ -142,16 +144,18 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
 
-                var settings = new XmlReaderSettings();
-                settings.IgnoreComments = true;
-                settings.IgnoreWhitespace = true;
-                var reader = XmlReader.Create(stream, settings);
+                    var settings = new XmlReaderSettings();
+                    settings.IgnoreComments = true;
+                    settings.IgnoreWhitespace = true;
+                    var reader = XmlReader.Create(stream, settings);
 
-                var doc = new Doc();
-                doc.ReadXml(reader);
-                Copy(doc);
+                    var doc = new Doc();
+                    doc.ReadXml(reader);
+                    Copy(doc);
+                }
             }
         }
 
@@ -166,15 +170,19 @@ namespace SpacyDotNet
             }
             else
             {
-                using var stream = new MemoryStream();
+                using (var stream = new MemoryStream())
+                {
 
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using var writer = XmlWriter.Create(stream, settings);                
+                    var settings = new XmlWriterSettings();
+                    settings.Indent = true;
+                    using (var writer = XmlWriter.Create(stream, settings))
+                    {
 
-                WriteXml(writer);
-                writer.Flush();
-                return stream.ToArray();
+                        WriteXml(writer);
+                        writer.Flush();
+                        return stream.ToArray();
+                    }
+                }
             }
         }
 
@@ -215,7 +223,7 @@ namespace SpacyDotNet
             _tokens = doc._tokens;
             _sentences = doc._sentences;
             _nounChunks = doc._nounChunks;
-            _ents = doc._ents;                
+            _ents = doc._ents;
         }
 
         public XmlSchema GetSchema()

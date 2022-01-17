@@ -2,10 +2,11 @@
 using Newtonsoft.Json;
 using Python.Runtime;
 using SpacyDotNet;
-using Speakato.Abstractions;
 using Speakato.CommandRecognizer.Models;
 using Speakato.Models;
-using Speakato.VoiceRecognizer.CognitiveServices;
+using Speakato.VoiceRecognizers;
+using Speakato.VoiceRecognizers.CognitiveServices;
+using Speakato.VoiceRecognizers.Google;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,9 +25,9 @@ namespace Speakato.CommandRecognizer
         private readonly Lang nlp;
         private readonly PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;
 
-        public SpeakatoRecognizer(HttpClient httpClient, GoogleCloudConfiguration configuration) : this(configuration as Configuration)
+        public SpeakatoRecognizer(GoogleCloudConfiguration configuration) : this(configuration as Configuration)
         {
-            throw new NotImplementedException();
+            voiceRecognizer = new GoogleCloudVoiceRecgonizer(settings.Language);
         }
 
         public SpeakatoRecognizer(HttpClient httpClient, CognitiveServiceConfiguration configuration) : this(configuration as Configuration)
@@ -62,18 +63,36 @@ namespace Speakato.CommandRecognizer
             availableCommands = new List<string>(File.ReadAllLines($"{configuration.ModelPath}/commands.txt"));
         }
 
+        /// <summary>
+        /// Predicts command with a model trained in SpeakatoTrainer 
+        /// Returns null if command isn't recognized.
+        /// </summary>
+        /// <param name="stream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <returns>Recognized command</returns>
         public async Task<string> SpeechToCommand(Stream stream)
         {
             var text = await voiceRecognizer.SpeechRecognizeAsync(stream);
             return TextToCommand(text);
         }
 
+        /// <summary>
+        /// Returns recognized speech from the given stream if possible.
+        /// Returns null if speech isn't recognized. 
+        /// </summary>
+        /// <param name="stream">Stream of a recording containing a sample with speech to be recognized</param>
+        /// <returns>A string with a recognized speech</returns>
         public async Task<string> SpeechToText(Stream stream)
         {
             var text = await voiceRecognizer.SpeechRecognizeAsync(stream);
             return text;
         }
 
+        /// <summary>
+        /// Predicts command with a model trained in SpeakatoTrainer 
+        /// Returns null if command isn't recognized.
+        /// </summary>
+        /// <param name="sentence">Sentence from which a command should be recognized</param>
+        /// <returns>Recognized command</returns>
         public string TextToCommand(string sentence)
         {
             var vector = TextToVector(sentence);
@@ -87,7 +106,7 @@ namespace Speakato.CommandRecognizer
             return null;
         }
 
-        public float[] TextToVector(string sentence)
+        private float[] TextToVector(string sentence)
         {
             var destSentence = CleanSentence(sentence);
             return nlp.GetDocument(destSentence.Trim()).GetVector.ToArray();

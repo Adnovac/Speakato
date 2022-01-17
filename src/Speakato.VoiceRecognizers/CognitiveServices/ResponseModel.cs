@@ -1,4 +1,4 @@
-﻿namespace Speakato.VoiceRecognizer.CognitiveServices
+﻿namespace Speakato.VoiceRecognizers.CognitiveServices
 {
     internal class ResponseModel
     {

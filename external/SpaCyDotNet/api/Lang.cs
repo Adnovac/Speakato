@@ -94,7 +94,7 @@ namespace SpacyDotNet
             }
 
             // Using the property is important form the members to be loaded
-            writer.WriteElementString("PipeNames", string.Join(',', PipeNames), Serialization.Namespace);
+            writer.WriteElementString("PipeNames", string.Join(",", PipeNames), Serialization.Namespace);
         }
 
         public class PipelineMeta : Dictionary<string, object>

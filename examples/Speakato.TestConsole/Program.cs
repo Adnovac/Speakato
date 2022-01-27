@@ -34,7 +34,7 @@ namespace Speakato.TestConsole
                 PythonEnvironmentPath = envPath
             };
 
-            speakatoRecognizer = new SpeakatoRecognizer(googleConfig);
+            speakatoRecognizer = new SpeakatoRecognizer(new HttpClient(), cognitiveConfig);
         }
 
         static async Task Main()

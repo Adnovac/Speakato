@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
+		<PackageReference Include="NAudio" Version="2.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Speakato.CommandRecognizer\Speakato.CommandRecognizer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Fonts\FontAwesome5.otf">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	</ItemGroup>
+</Project>

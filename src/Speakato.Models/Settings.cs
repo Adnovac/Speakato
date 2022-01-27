@@ -20,5 +20,8 @@ namespace Speakato.Models
         /// </summary>
         [JsonProperty("token_len")]
         public string TokenLength { get; set; }
+
+        [JsonIgnore]
+        public string ModelPath { get; set; }
     }
 }

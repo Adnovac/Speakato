@@ -27,7 +27,7 @@ namespace Speakato.VoiceRecognizers.CognitiveServices
         public async Task<string> SpeechRecognizeAsync(Stream voiceStream)
         {
             StreamContent content = new StreamContent(voiceStream);
-            HttpResponseMessage response = await httpClient.PostAsync($"?language={language}", content);
+            HttpResponseMessage response = await httpClient.PostAsync($"?language=pl-PL", content);
             string responseContent = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

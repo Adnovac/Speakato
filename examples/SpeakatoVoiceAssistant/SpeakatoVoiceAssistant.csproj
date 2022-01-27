@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
 		<PackageReference Include="NAudio" Version="2.0.1" />
+		<PackageReference Include="System.Speech" Version="6.0.2-mauipre.1.22054.8" />
 	</ItemGroup>
 
 	<ItemGroup>

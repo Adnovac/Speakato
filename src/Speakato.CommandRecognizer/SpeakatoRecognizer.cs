@@ -19,8 +19,8 @@ namespace Speakato.CommandRecognizer
 {
     public class SpeakatoRecognizer : ISpeakatoRecognizer
     {
+        public readonly Settings settings;
         private readonly IVoiceRecognizerService voiceRecognizer;
-        private readonly Settings settings;
         private Lang nlp;
         private List<string> availableCommands;
         private PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;

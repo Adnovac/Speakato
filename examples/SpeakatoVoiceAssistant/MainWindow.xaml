@@ -9,12 +9,15 @@
         mc:Ignorable="d"
         Background="Transparent"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="120" Width="800"
+        Title="MainWindow" Height="160" Width="800"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}">
     <Grid>
         <DockPanel>
             <Grid Opacity="0.5" DockPanel.Dock="Top" Height="40" Background="Black" MouseDown="Grid_MouseDown">
                 <TextBlock Name="RecognizedTextBlock" FontSize="26" Foreground="White" TextAlignment="Center" Text="{Binding Path=RecognizedVoice}"/>
+            </Grid>
+            <Grid Opacity="0.7" DockPanel.Dock="Top" Height="40" Background="Black" MouseDown="Grid_MouseDown">
+                <TextBlock Name="SystemAnswer" FontSize="26" Foreground="White" TextAlignment="Center" Text="{Binding Path=SystemAnswer}"/>
             </Grid>
             <Border CornerRadius="0,0,30,30" BorderThickness="1,1,1,1" Background="#330033" >
                 <Grid Opacity="1" DockPanel.Dock="Bottom">

@@ -6,6 +6,8 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Speech.Synthesis;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,13 +17,26 @@ namespace SpeakatoVoiceAssistant.ViewModels
     {
         private SpeakatoRecognizer? speakatoRecognizer;
         private CommandResolver commandResolver = new CommandResolver(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+        private SpeechSynthesizer synthesizer = new SpeechSynthesizer();
         public MainViewModel(SpeakatoRecognizer speakatoRecognizer)
         {
             this.speakatoRecognizer = speakatoRecognizer;
+            if (speakatoRecognizer.settings.Language == "pl")
+            {
+                try
+                {
+                    synthesizer.SelectVoice("Microsoft Paulina Desktop");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
             ListenCommand = new RelayCommand(async () => await Listen(), () => CanListen);
             CanListen = false;
 
-            RecognizedVoice = "Speakato is loading. Please wait...";
+            RecognizedVoice = "Wczytywanie speakato...";
 
             var backgroundWorker = new BackgroundWorker();
             backgroundWorker.DoWork += new DoWorkEventHandler(PrepareSpeakatoRecognizer);
@@ -32,13 +47,14 @@ namespace SpeakatoVoiceAssistant.ViewModels
             );
             backgroundWorker.RunWorkerAsync();
             CloseApplicationCommand = new RelayCommand(CloseApplication);
+            synthesizer.SetOutputToDefaultAudioDevice();
         }
 
         private void PrepareSpeakatoRecognizer(object? sender, DoWorkEventArgs e)
         {
             //TODO: Background model loading
             //speakatoRecognizer!.LoadModel();
-            RecognizedVoice = "Say something!";
+            RecognizedVoice = "Powiedz coś!";
         }
 
         public ICommand ListenCommand { get; private set; }
@@ -52,19 +68,25 @@ namespace SpeakatoVoiceAssistant.ViewModels
                 var commandRaw = speakatoRecognizer!.TextToCommand(content);
                 RecognizedVoice = content;
 
-                if (commandResolver != null)
+                if (commandRaw != null)
                 {
                     Command command = (Command)Enum.Parse(typeof(Command), commandRaw, true);
-                    commandResolver.ResolveCommnad(command, content);
+                    SystemAnswer = commandResolver.ResolveCommnad(command, content);
+                }
+                else
+                {
+                    SystemAnswer = "Nie wykryłem żadnej komendy";
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
+                SystemAnswer = "Coś się popsuło, wracam na pulpit";
             }
             finally
             {
                 CanListen = true;
+                synthesizer.SpeakAsync(systemAnswer);
             }
         }
 
@@ -92,7 +114,7 @@ namespace SpeakatoVoiceAssistant.ViewModels
                     writer.Write(a.Buffer, 0, a.Buffer.Length);
                 };
                 waveIn.StartRecording();
-                System.Threading.Thread.Sleep(3 * 1000);
+                Thread.Sleep(4 * 1000);
                 waveIn.StopRecording();
                 writer.Flush();
 
@@ -112,6 +134,20 @@ namespace SpeakatoVoiceAssistant.ViewModels
             {
                 recognizedVoice = value;
                 this.RaisePropertyChanged(nameof(RecognizedVoice));
+            }
+        }
+
+        private string systemAnswer = string.Empty;
+        public string SystemAnswer
+        {
+            get
+            {
+                return systemAnswer;
+            }
+            private set
+            {
+                systemAnswer = value;
+                this.RaisePropertyChanged(nameof(SystemAnswer));
             }
         }
 

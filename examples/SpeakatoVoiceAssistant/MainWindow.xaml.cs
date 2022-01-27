@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace VoiceAssistant.GUI
+namespace SpeakatoVoiceAssistant
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -16,7 +16,9 @@ namespace VoiceAssistant.GUI
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
+            {
                 this.DragMove();
+            }
         }
     }
 }

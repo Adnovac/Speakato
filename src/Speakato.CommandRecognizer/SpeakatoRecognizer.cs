@@ -20,33 +20,40 @@ namespace Speakato.CommandRecognizer
     public class SpeakatoRecognizer : ISpeakatoRecognizer
     {
         private readonly IVoiceRecognizerService voiceRecognizer;
-        private readonly List<string> availableCommands;
         private readonly Settings settings;
-        private readonly Lang nlp;
-        private readonly PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;
+        private Lang nlp;
+        private List<string> availableCommands;
+        private PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;
 
-        public SpeakatoRecognizer(GoogleCloudConfiguration configuration) : this(configuration as Configuration)
+        public SpeakatoRecognizer(GoogleCloudConfiguration configuration, bool loadModel = true) : this(configuration as Configuration, loadModel)
         {
             voiceRecognizer = new GoogleCloudVoiceRecgonizer(settings.Language);
         }
 
-        public SpeakatoRecognizer(HttpClient httpClient, CognitiveServiceConfiguration configuration) : this(configuration as Configuration)
+        public SpeakatoRecognizer(HttpClient httpClient, CognitiveServiceConfiguration configuration, bool loadModel = true) : this(configuration as Configuration, loadModel)
         {
             voiceRecognizer = new CognitiveServiceVoiceRecognizer(configuration, httpClient, settings.Language);
         }
 
-        private SpeakatoRecognizer(Configuration configuration)
+        private SpeakatoRecognizer(Configuration configuration, bool loadModel = true)
         {
             var settingsContent = File.ReadAllText($"{configuration.ModelPath}/info.json");
             settings = JsonConvert.DeserializeObject<Settings>(settingsContent);
+            settings.ModelPath = configuration.ModelPath;
 
             Environment.SetEnvironmentVariable("PATH", configuration.PythonEnvironmentPath, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable("PYTHONHOME", configuration.PythonEnvironmentPath, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("PYTHONPATH", $"{configuration.PythonEnvironmentPath}\\Lib\\site-packages;{configuration.PythonEnvironmentPath}\\Lib", EnvironmentVariableTarget.Process);
 
             Runtime.PythonDLL = $"python38.dll";
             PythonEngine.PythonHome = configuration.PythonEnvironmentPath;
             PythonEngine.PythonPath = PythonEngine.PythonPath + ";" + Environment.GetEnvironmentVariable("PYTHONPATH", EnvironmentVariableTarget.Process);
+            
+            if (loadModel) LoadModel();
+        }
 
+        public void LoadModel()
+        {
             nlp = new Spacy().Load(settings.SpacyModel);
 
             MLContext mlContext = new MLContext();
@@ -56,11 +63,11 @@ namespace Speakato.CommandRecognizer
                                             .ApplyOnnxModel(
                                                 outputColumnNames: new string[] { "dense_3" },
                                                 inputColumnNames: new string[] { "dense_input" },
-                                                $"{configuration.ModelPath}/model.onnx");
+                                                $"{settings.ModelPath}/model.onnx");
 
             var predictionPipeline = onnxPredictionPipeline.Fit(mlContext.Data.LoadFromEnumerable(new OnnxModelInput[] { }));
             predictionEngine = mlContext.Model.CreatePredictionEngine<OnnxModelInput, OnnxModelOutput>(predictionPipeline);
-            availableCommands = new List<string>(File.ReadAllLines($"{configuration.ModelPath}/commands.txt"));
+            availableCommands = new List<string>(File.ReadAllLines($"{settings.ModelPath}/commands.txt"));
         }
 
         /// <summary>

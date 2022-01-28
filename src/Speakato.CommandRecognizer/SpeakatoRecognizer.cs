@@ -51,7 +51,10 @@ namespace Speakato.CommandRecognizer
             
             if (loadModel) LoadModel();
         }
-
+        
+        /// <summary>
+        /// Loads a model. Call it before first use of any other method if loadModel was set to false in the constructor.
+        /// </summary>
         public void LoadModel()
         {
             nlp = new Spacy().Load(settings.SpacyModel);

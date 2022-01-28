@@ -5,10 +5,7 @@ namespace Speakato.Models
     /// <summary>
     /// Configuration of Speakato in case of using Google Cloud
     /// </summary>
-    public class GoogleCloudConfiguration : Configuration
-    {
-        // GOOGLE_APPLICATION_CREDENTIALS has to be set
-    }
+    public class GoogleCloudConfiguration : Configuration {}
 
     /// <summary>
     /// Configuration of Speakato in case of using Cognitive Services
@@ -25,7 +22,7 @@ namespace Speakato.Models
     public abstract class Configuration
     {
         /// <summary>
-        /// Path to the directory produced by SpeakatoTrainer
+        /// Path to the model produced by SpeakatoTrainer
         /// </summary>
         public string ModelPath { get; set; }
 

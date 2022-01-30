@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Speakato.CommandRecognizer
@@ -28,5 +29,13 @@ namespace Speakato.CommandRecognizer
         /// <param name="sentence">Sentence from which a command should be recognized</param>
         /// <returns>Recognized command</returns>
         string TextToCommand(string sentence);
+
+        /// <summary>
+        /// Looks for orgName, date, placeName, and other labels depending on a selected language. 
+        /// Returns list of tuples as <text, recognized label>
+        /// </summary>
+        /// <param name="sentence">Sentence from which labels should be recognized</param>
+        /// <returns>List of tuples as <text, recognized label></text></returns>
+        List<(string, string)> GetEnts(string sentence);
     }
 }

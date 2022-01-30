@@ -116,6 +116,23 @@ namespace Speakato.CommandRecognizer
             return null;
         }
 
+        /// <summary>
+        /// Looks for orgName, date, placeName, and other labels depending on a selected language. 
+        /// Returns list of tuples as <text, recognized label>
+        /// </summary>
+        /// <param name="sentence">Sentence from which labels should be recognized</param>
+        /// <returns>List of tuples as <text, recognized label></text></returns>
+        public List<(string,string)> GetEnts(string sentence)
+        {
+            List<(string, string)> ents = new List<(string, string)>();
+            var document = nlp.GetDocument(sentence);
+            foreach(var span in document.Ents)
+            {
+                ents.Add((span.Text, span.Label));
+            }
+            return ents;
+        }
+
         private float[] TextToVector(string sentence)
         {
             var destSentence = CleanSentence(sentence);

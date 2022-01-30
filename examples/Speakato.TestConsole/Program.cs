@@ -39,21 +39,22 @@ namespace Speakato.TestConsole
 
         static async Task Main()
         {
-            foreach (string filePath in Directory.GetFiles(clipsPath))
-            {
-                try
-                {
-                    Stream inputStream = File.OpenRead(filePath);
-                    string result = await speakatoRecognizer.SpeechToText(inputStream);
-                    Console.WriteLine(result);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
+            //foreach (string filePath in Directory.GetFiles(clipsPath))
+            //{
+            //    try
+            //    {
+            //        Stream inputStream = File.OpenRead(filePath);
+            //        string result = await speakatoRecognizer.SpeechToText(inputStream);
+            //        Console.WriteLine(result);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine(ex.Message);
+            //    }
+            //}
             //var command = speakatoRecognizer.TextToCommand("Siema, co tam?");
-            Console.WriteLine();
+            foreach (var ent in speakatoRecognizer.GetEnts("SIema, idę dzisiaj do Paryża do restauracji na 20:00 w lutym i w Google o piątej trzydzieści"))
+                Console.WriteLine($"{ent.Item1} : {ent.Item2}");
         }
     }
 }

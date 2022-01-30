@@ -7,7 +7,7 @@ This project uses a modified [SpacyDotNet](https://github.com/AMArostegui/SpacyD
 Account in Google Cloud/Microsoft Cognitive Services is required to use this library.
 
 ## Setup
-- Create a Virtual environment with packages installed from the [prequirements.txt](https://github.com/Adnovac/SpeakatoTrainer/blob/main/requirements.txt)
+- Create a Virtual environment with packages installed from the [requirements.txt](https://github.com/Adnovac/SpeakatoTrainer/blob/main/requirements.txt)
 - Train a model using [SpeakatoTrainer](https://github.com/Adnovac/SpeakatoTrainer)
 
 A setup script will be provided in the future.

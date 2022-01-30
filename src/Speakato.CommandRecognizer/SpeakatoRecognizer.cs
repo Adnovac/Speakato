@@ -105,6 +105,7 @@ namespace Speakato.CommandRecognizer
         /// <returns>Recognized command</returns>
         public string TextToCommand(string sentence)
         {
+            if (string.IsNullOrWhiteSpace(sentence)) return null;
             var vector = TextToVector(sentence);
             var modelInput = new OnnxModelInput { Vector = vector };
             var predictedFare = predictionEngine.Predict(modelInput).PredictedFare;

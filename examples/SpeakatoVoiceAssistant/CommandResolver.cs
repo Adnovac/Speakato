@@ -35,11 +35,11 @@ namespace SpeakatoVoiceAssistant
 
         private string CloseFile(string content)
         {
-            if (currentProcess != null)
+            if (currentProcess != null && !currentProcess.HasExited)
             {
-                currentProcess.Close();
                 currentPath = basicPath;
-                return $"Zamknięto {currentProcess.ProcessName}";
+                currentProcess.Kill();
+                return $"Zamknięto {currentProcess.ProcessName}. Jestem na pulpicie";
             }
             return $"Nie mam nic do zamknięcia";
         }
@@ -68,7 +68,10 @@ namespace SpeakatoVoiceAssistant
                     }
                     else
                     {
-                        currentProcess = Process.Start(@"cmd.exe", $"/c {path.Item1}");
+                        if (Path.GetExtension(path.Item1) == ".exe")
+                            currentProcess = Process.Start(path.Item1);
+                        else
+                            currentProcess = Process.Start(@"cmd.exe", $"/c {path.Item1}");
                         return $"Otwieram aplikację {name}";
                     }
                 }

@@ -65,8 +65,8 @@ namespace SpeakatoVoiceAssistant.ViewModels
             try
             {
                 var content = await speakatoRecognizer!.SpeechToText(new MemoryStream(GetMicrophoneInput()));
-                var commandRaw = speakatoRecognizer!.TextToCommand(content);
                 RecognizedVoice = content;
+                var commandRaw = speakatoRecognizer!.TextToCommand(content);
 
                 if (commandRaw != null)
                 {

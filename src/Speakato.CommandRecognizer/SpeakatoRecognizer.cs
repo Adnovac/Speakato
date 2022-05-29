@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Speech.Recognition;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -151,6 +152,17 @@ namespace Speakato.CommandRecognizer
                 if (!nlp.GetStopWords.Contains(word.Lemma)) destSentence += $"{word.Lemma} ";
             }
             return destSentence;
+        }
+
+        private void ToggleListening()
+        {
+            var recognizer = new SpeechRecognitionEngine();
+            recognizer.SpeechRecognized += Recognizer_SpeechRecognized;
+        }
+
+        private void Recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            Console.WriteLine("Recognized text: " + e.Result.Text);
         }
     }
 }

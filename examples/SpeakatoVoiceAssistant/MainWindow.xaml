@@ -21,6 +21,7 @@
             </Grid>
             <Border CornerRadius="0,0,30,30" BorderThickness="1,1,1,1" Background="#330033" >
                 <Grid Opacity="1" DockPanel.Dock="Bottom">
+                    <!--<TextBlock Text="●" VerticalAlignment="Center" FontSize="60" Foreground="{Binding Path=RecorderColor}" Margin="30,0,0,10"/>-->
                     <StackPanel Orientation="Horizontal" Margin="30,10,30,10" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button Style="{StaticResource BorderButton}" Content="&#xf4ad;" Command="{Binding Path=ListenCommand}"/>
                         <Button Style="{StaticResource BorderButton}" Content="&#xf410;" Command="{Binding Path=CloseApplicationCommand}"/>

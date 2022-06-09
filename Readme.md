@@ -47,6 +47,10 @@ Returns recognized speech from the given stream if possible. Returns null if spe
 Predicts command with a model trained in SpeakatoTrainer. Returns null if command isn't recognized.
 ```sentence``` - Sentence from which a command should be recognized
 
+### ```void ToggleListening(string activationCommand = "start")```
+Turns on continues listening by SpeechRecognitionEngine. When desired activationCommand is detected CommandDetected event will be invoked.
+```activationCommand``` - Command which will be recognized by SpeechRecognitionEngine. It has to be an english word.
+
 ## Examples
 An example use of Speakato is provided in [examples/SpeakatoVoiceAssistant](https://github.com/Adnovac/Speakato/tree/main/examples/SpeakatoVoiceAssistant) and [examples/Speakato.TestConsole](https://github.com/Adnovac/Speakato/tree/main/examples/Speakato.TestConsole). 
 SpeakatoVoiceAssistant uses the model trained the [polish_commands_dataset_new](https://github.com/Adnovac/SpeakatoTrainer/tree/main/examples/polish_commands_dataset_new)

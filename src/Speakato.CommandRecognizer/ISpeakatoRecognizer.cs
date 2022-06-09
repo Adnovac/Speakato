@@ -37,5 +37,16 @@ namespace Speakato.CommandRecognizer
         /// <param name="sentence">Sentence from which labels should be recognized</param>
         /// <returns>List of tuples as <text, recognized label></text></returns>
         List<(string, string)> GetEnts(string sentence);
+
+        /// <summary>
+        /// Loads a model. Call it before first use of any other method if loadModel was set to false in the constructor.
+        /// </summary>
+        void LoadModel();
+
+        /// <summary>
+        /// Turns on continues listening by SpeechRecognitionEngine. When desired activationCommand is detected CommandDetected event will be invoked.
+        /// </summary>
+        /// <param name="activationCommand">Command which will be recognized by SpeechRecognitionEngine. It has to be an english word.</param>
+        void ToggleListening(string activationCommand = "start");
     }
 }

@@ -9,8 +9,8 @@ namespace SpeakatoVoiceAssistant
     internal class CommandResolver
     {
         private string currentPath;
-        private string basicPath;
-        private Process currentProcess = null;
+        private readonly string basicPath;
+        private Process? currentProcess = null;
         public CommandResolver(string startingPath)
         {
             basicPath = startingPath;
@@ -19,29 +19,38 @@ namespace SpeakatoVoiceAssistant
 
         public string ResolveCommnad(Command command, string content)
         {
+            content = content.ToLower().Replace("odtwórz", "otwórz");
+            if(content.Contains("stwórz")) return CreateDirectory(content);
             return command switch
             {
-                Command.Greeting => Greeting(content),
+                Command.Greeting => Greeting(),
                 Command.Open => OpenFile(content),
-                Command.Close => CloseFile(content),
+                Command.Create => CreateDirectory(content),
+                Command.Close => CloseFile(),
                 _ => "Nic nie zrobiłem"
             };
         }
 
-        private string Greeting(string content)
+        private static string Greeting()
         {
             return "Cześć!";
         }
 
-        private string CloseFile(string content)
+        private string CloseFile()
         {
             if (currentProcess != null && !currentProcess.HasExited)
             {
-                currentPath = basicPath;
                 currentProcess.Kill();
-                return $"Zamknięto {currentProcess.ProcessName}. Jestem na pulpicie";
+                return $"Zamknięto {currentProcess.ProcessName}. Jestem w folderze {currentPath.Split().Last()}";
             }
             return $"Nie mam nic do zamknięcia";
+        }
+
+        private string CreateDirectory(string content)
+        {
+            var name = content.Split().Last();
+            Directory.CreateDirectory(Path.Combine(currentPath, name));
+            return $"Stworzono folder {name}";
         }
 
         private string OpenFile(string content)
@@ -53,7 +62,7 @@ namespace SpeakatoVoiceAssistant
             {
                 Console.WriteLine(path);
                 var name = Path.GetFileNameWithoutExtension(path.Item1);
-                if (content.ToLower().Contains(name.ToLower()))
+                if (!string.IsNullOrWhiteSpace(name) && content.ToLower().Contains(name.ToLower()))
                 {
                     if (currentProcess != null)
                     {

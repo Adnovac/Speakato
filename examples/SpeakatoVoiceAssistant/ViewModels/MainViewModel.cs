@@ -6,21 +6,32 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Media;
+using System.Reflection;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SpeakatoVoiceAssistant.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
-        private SpeakatoRecognizer? speakatoRecognizer;
-        private CommandResolver commandResolver = new CommandResolver(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-        private SpeechSynthesizer synthesizer = new SpeechSynthesizer();
+        private readonly SpeakatoRecognizer? speakatoRecognizer;
+        private readonly CommandResolver commandResolver = new(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+        private readonly SpeechSynthesizer synthesizer = new();
+        private readonly SoundPlayer soundPlayer;
+
         public MainViewModel(SpeakatoRecognizer speakatoRecognizer)
         {
+            var bubbleSoundPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "bubble_sound.wav");
+            soundPlayer = new(bubbleSoundPath);
+            soundPlayer.Load();
             this.speakatoRecognizer = speakatoRecognizer;
+            this.speakatoRecognizer.CommandDetected += SpeakatoRecognizer_CommandDetected;
+
             if (speakatoRecognizer.settings.Language == "pl")
             {
                 try
@@ -48,27 +59,36 @@ namespace SpeakatoVoiceAssistant.ViewModels
             backgroundWorker.RunWorkerAsync();
             CloseApplicationCommand = new RelayCommand(CloseApplication);
             synthesizer.SetOutputToDefaultAudioDevice();
+            this.speakatoRecognizer.ToggleListening();
+        }
+
+        private async Task SpeakatoRecognizer_CommandDetected()
+        {
+            Thread.Sleep(1000);
+            await Listen();
         }
 
         private void PrepareSpeakatoRecognizer(object? sender, DoWorkEventArgs e)
         {
-            //TODO: Background model loading
-            //speakatoRecognizer!.LoadModel();
-            RecognizedVoice = "Powiedz coś!";
+            RecognizedVoice = "Powiedz start aby nasłuchiwać albo wciśnij przycisk!";
         }
 
         public ICommand ListenCommand { get; private set; }
 
+
         public async Task Listen()
         {
+            RecorderColor = "#750219";
             CanListen = false;
+            soundPlayer.Play();
             try
             {
                 var content = await speakatoRecognizer!.SpeechToText(new MemoryStream(GetMicrophoneInput()));
                 RecognizedVoice = content;
+                RecorderColor = "#240108";
                 var commandRaw = speakatoRecognizer!.TextToCommand(content);
 
-                if (commandRaw != null)
+                if (commandRaw != null || content.Contains("stwórz"))
                 {
                     Command command = (Command)Enum.Parse(typeof(Command), commandRaw, true);
                     SystemAnswer = commandResolver.ResolveCommnad(command, content);
@@ -87,6 +107,8 @@ namespace SpeakatoVoiceAssistant.ViewModels
             {
                 CanListen = true;
                 synthesizer.SpeakAsync(systemAnswer);
+
+                //this.speakatoRecognizer!.ToggleListening();
             }
         }
 
@@ -97,12 +119,12 @@ namespace SpeakatoVoiceAssistant.ViewModels
             System.Windows.Application.Current.Shutdown();
         }
 
-        private byte[] GetMicrophoneInput()
+        private static byte[] GetMicrophoneInput()
         {
             byte[] result;
             using (var waveIn = new NAudio.Wave.WaveInEvent
             {
-                DeviceNumber = 0, //TODO: Microphone chooser
+                DeviceNumber = 0,
                 WaveFormat = new NAudio.Wave.WaveFormat(rate: 44100, bits: 16, channels: 1),
                 BufferMilliseconds = 50
             })
@@ -151,6 +173,20 @@ namespace SpeakatoVoiceAssistant.ViewModels
             }
         }
 
+        private string recorderColor = "#240108";
+        public string RecorderColor
+        {
+            get
+            {
+                return recorderColor;
+            }
+            private set
+            {
+                recorderColor = value;
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => RaisePropertyChanged(nameof(RecorderColor))));
+            }
+        }
+
         private bool canListen;
         public bool CanListen
         {
@@ -161,8 +197,9 @@ namespace SpeakatoVoiceAssistant.ViewModels
             private set
             {
                 canListen = value;
-                this.RaisePropertyChanged(nameof(CanListen));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => RaisePropertyChanged(nameof(CanListen))));
                 ((RelayCommand)ListenCommand).RaiseCanExecuteChanged();
+
             }
         }
     }

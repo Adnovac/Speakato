@@ -49,4 +49,4 @@ Predicts command with a model trained in SpeakatoTrainer. Returns null if comman
 
 ## Examples
 An example use of Speakato is provided in [examples/SpeakatoVoiceAssistant](https://github.com/Adnovac/Speakato/tree/main/examples/SpeakatoVoiceAssistant) and [examples/Speakato.TestConsole](https://github.com/Adnovac/Speakato/tree/main/examples/Speakato.TestConsole). 
-SpeakatoVoiceAssistant uses the model trained the [polish_commands_dataset](https://github.com/Adnovac/SpeakatoTrainer/tree/main/examples/polish_commands_dataset)
+SpeakatoVoiceAssistant uses the model trained the [polish_commands_dataset_new](https://github.com/Adnovac/SpeakatoTrainer/tree/main/examples/polish_commands_dataset_new)

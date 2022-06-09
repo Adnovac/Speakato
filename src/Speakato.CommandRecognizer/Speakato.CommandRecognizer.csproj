@@ -11,6 +11,7 @@
 		<PackageReference Include="Microsoft.ML" Version="1.7.0" />
 		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.10.0" />
 		<PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.7.0" />
+		<PackageReference Include="System.Speech" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -21,7 +22,7 @@
 
 	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
 		<ItemGroup>
-			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
 </Project>

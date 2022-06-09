@@ -2,24 +2,21 @@
 using Speakato.CommandRecognizer;
 using Speakato.Models;
 using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Speakato.TestConsole
 {
     class Program
     {
         private static readonly ISpeakatoRecognizer speakatoRecognizer;
-        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\spkt-test";
+        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\Speakato_model_2022-06-09";
         private const string envPath = @"C:\Users\annad\anaconda3\envs\spkt";
-        private const string clipsPath = @"C:\Users\annad\Documents\Sound recordings";
         static Program()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
                                                     .AddEnvironmentVariables();
             IConfiguration Configuration = builder.Build();
 
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var cognitiveConfig = new CognitiveServiceConfiguration
             {
                 Key = Configuration["CognitiveServiceKey"],
@@ -27,6 +24,8 @@ namespace Speakato.TestConsole
                 ModelPath = modelPath,
                 PythonEnvironmentPath = envPath
             };
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
 
             var googleConfig = new GoogleCloudConfiguration
             {
@@ -34,27 +33,27 @@ namespace Speakato.TestConsole
                 PythonEnvironmentPath = envPath
             };
 
-            speakatoRecognizer = new SpeakatoRecognizer(new HttpClient(), cognitiveConfig);
+            speakatoRecognizer = new SpeakatoRecognizer(googleConfig, false);
         }
 
-        static async Task Main()
+        static void Main()
         {
-            //foreach (string filePath in Directory.GetFiles(clipsPath))
-            //{
-            //    try
-            //    {
-            //        Stream inputStream = File.OpenRead(filePath);
-            //        string result = await speakatoRecognizer.SpeechToText(inputStream);
-            //        Console.WriteLine(result);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine(ex.Message);
-            //    }
-            //}
-            //var command = speakatoRecognizer.TextToCommand("Siema, co tam?");
-            foreach (var ent in speakatoRecognizer.GetEnts("SIema, idę dzisiaj do Paryża do restauracji na 20:00 w lutym i w Google o piątej trzydzieści"))
-                Console.WriteLine($"{ent.Item1} : {ent.Item2}");
+            speakatoRecognizer.LoadModel();
+            speakatoRecognizer.ToggleListening();
+            while (true)
+            {
+
+            }
         }
+    }
+
+    internal class Entity
+    {
+        public string Path { get; set; }
+        public string Text { get; set; }
+        public bool IsCommand { get; set; }
+        public int Quality { get; set; }
+        public bool? Recognized { get; set; }
+        public string RecognizedText { get; set; }
     }
 }

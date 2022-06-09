@@ -8,7 +8,7 @@ namespace SpeakatoVoiceAssistant.ViewModels
 {
     internal class ViewModelLocator
     {
-        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\spkt-test";
+        private const string modelPath = @"C:\dev\SpeakatoTrainer\models\Speakato_model_2022-06-09";
         private const string envPath = @"C:\Users\annad\anaconda3\envs\spkt";
 
         public ViewModelLocator()

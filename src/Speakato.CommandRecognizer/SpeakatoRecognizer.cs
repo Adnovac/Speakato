@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Speech.Recognition;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -20,11 +21,13 @@ namespace Speakato.CommandRecognizer
     public class SpeakatoRecognizer : ISpeakatoRecognizer
     {
         public readonly Settings settings;
+        public delegate Task CommandDecetedEventHandler();
+        public event CommandDecetedEventHandler CommandDetected;
         private readonly IVoiceRecognizerService voiceRecognizer;
         private Lang nlp;
         private List<string> availableCommands;
         private PredictionEngine<OnnxModelInput, OnnxModelOutput> predictionEngine;
-
+        private SpeechRecognitionEngine recognizer;
         public SpeakatoRecognizer(GoogleCloudConfiguration configuration, bool loadModel = true) : this(configuration as Configuration, loadModel)
         {
             voiceRecognizer = new GoogleCloudVoiceRecgonizer(settings.Language);
@@ -48,10 +51,10 @@ namespace Speakato.CommandRecognizer
             Runtime.PythonDLL = $"python38.dll";
             PythonEngine.PythonHome = configuration.PythonEnvironmentPath;
             PythonEngine.PythonPath = PythonEngine.PythonPath + ";" + Environment.GetEnvironmentVariable("PYTHONPATH", EnvironmentVariableTarget.Process);
-            
+
             if (loadModel) LoadModel();
         }
-        
+
         /// <summary>
         /// Loads a model. Call it before first use of any other method if loadModel was set to false in the constructor.
         /// </summary>
@@ -123,15 +126,37 @@ namespace Speakato.CommandRecognizer
         /// </summary>
         /// <param name="sentence">Sentence from which labels should be recognized</param>
         /// <returns>List of tuples as <text, recognized label></text></returns>
-        public List<(string,string)> GetEnts(string sentence)
+        public List<(string, string)> GetEnts(string sentence)
         {
             List<(string, string)> ents = new List<(string, string)>();
             var document = nlp.GetDocument(sentence);
-            foreach(var span in document.Ents)
+            foreach (var span in document.Ents)
             {
                 ents.Add((span.Text, span.Label));
             }
             return ents;
+        }
+
+        /// <summary>
+        /// Turns on continues listening by SpeechRecognitionEngine. When desired activationCommand is detected CommandDetected event will be invoked.
+        /// </summary>
+        /// <param name="activationCommand">Command which will be recognized by SpeechRecognitionEngine. It has to be an english word.</param>
+        public void ToggleListening(string activationCommand = "start")
+        {
+            if (recognizer == null)
+            {
+                recognizer = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US"));
+                var grammar = new Grammar(new GrammarBuilder(new Choices(new string[] { activationCommand })));
+                recognizer.LoadGrammar(grammar);
+                recognizer.SetInputToDefaultAudioDevice();
+                recognizer.SpeechRecognized += Recognizer_SpeechRecognized;
+            }
+            recognizer.RecognizeAsync(RecognizeMode.Multiple);
+        }
+
+        private void Recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            CommandDetected?.Invoke();
         }
 
         private float[] TextToVector(string sentence)
